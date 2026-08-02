@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+const EXPECTED_SHA256 = '76b503013036ca25acfab8e3335d7edb1638b7d05f7e45a41a606ba0b8832603';
 const partUrls = Array.from(
   { length: 8 },
   (_, index) => new URL(`./runtime/part-${index.toString().padStart(2, '0')}.b64`, import.meta.url),
@@ -17,6 +18,11 @@ const encoded = (await Promise.all(responses.map((response) => response.text()))
   .replace(/\s+/g, '');
 const binary = atob(encoded);
 const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
-const source = new TextDecoder().decode(bytes);
+const digest = await crypto.subtle.digest('SHA-256', bytes);
+const checksum = Array.from(new Uint8Array(digest), (value) => value.toString(16).padStart(2, '0')).join('');
+if (checksum !== EXPECTED_SHA256) {
+  throw new Error(`PROJECT ECHO 核心校驗失敗：${checksum}`);
+}
 
+const source = new TextDecoder().decode(bytes);
 export const Game = new Function('THREE', `${source}\nreturn Game;`)(THREE);
