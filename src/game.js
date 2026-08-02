@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-const EXPECTED_SHA256 = '76b503013036ca25acfab8e3335d7edb1638b7d05f7e45a41a606ba0b8832603';
+const EXPECTED_SHA256 = '62eae47a0b4c2dba0fd2112e96d275c0a392f3af465f14a4d2ecf2ac7dd96fac';
 const partUrls = Array.from(
   { length: 8 },
   (_, index) => new URL(`./runtime/part-${index.toString().padStart(2, '0')}.b64`, import.meta.url),
